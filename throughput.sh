@@ -8,8 +8,8 @@ workload=(a b c d) #put more
 #db_prop= 192.168.122.89
 
 #for mongodb
-database=mongodb
-db_prop=54.68.194.27:27017
+# database=mongodb
+# db_prop=54.68.194.27:27017
 
 #throughput vs latency    
 
@@ -27,7 +27,7 @@ if [ $database == dynamodb ]; then
         ./bin/ycsb load $database -P $db_prop -threads $tl_threads -p recordcount=$tl_recordcount -P workloads/workloada -s > workloada_load_res.txt
 elif [ $database == cassandra-10 ]; then
         echo loading cassandra-10
-        ./bin/ycsb load $database -P hosts=$db_prop -threads $tl_threads -p recordcount=$tl_recordcount -P workloads/workloada -s > workloada_load_res.txt
+        ./bin/ycsb load $database -p hosts=$db_prop -threads $tl_threads -p recordcount=$tl_recordcount -P workloads/workloada -s > workloada_load_res.txt
 elif [ $database == mongodb ]; then
         echo loading mongodb
         ./bin/ycsb load $database -p mongodb.url=mongodb://$db_prop -threads $tl_threads -p recordcount=$tl_recordcount -P workloads/workloada -s > workloada_load_res.txt
