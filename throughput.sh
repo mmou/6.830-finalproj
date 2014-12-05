@@ -1,15 +1,15 @@
 #!/bin/bash      
 
-database=dynamodb
-db_prop=dynamodb/conf/dynamodb.properties
+#database=dynamodb
+#db_prop=dynamodb/conf/dynamodb.properties
 workload=(a b c d) #put more
 #for cassandra
 #database=cassandra-10
 #db_prop= 192.168.122.89
 
 #for mongodb
-#database=mongodb
-#db_prop= mongodb://54.69.58.62:27017
+database=mongodb
+db_prop=54.68.194.27:27017
 
 #throughput vs latency    
 
@@ -30,7 +30,7 @@ elif [ $database == cassandra-10 ]; then
         ./bin/ycsb load $database -P hosts=$db_prop -threads $tl_threads -p recordcount=$tl_recordcount -P workloads/workloada -s > workloada_load_res.txt
 elif [ $database == mongodb ]; then
         echo loading mongodb
-        ./bin/ycsb load $database -P mongodb.url=$db_prop -threads $tl_threads -p recordcount=$tl_recordcount -P workloads/workloada -s > workloada_load_res.txt
+        ./bin/ycsb load $database -p mongodb.url=mongodb://$db_prop -threads $tl_threads -p recordcount=$tl_recordcount -P workloads/workloada -s > workloada_load_res.txt
 fi
 
 for i in ${throughput[@]}; do
@@ -44,7 +44,7 @@ for i in ${throughput[@]}; do
                         ./bin/ycsb run $database -P hosts=$db_prop -threads $tl_threads -p recordcount=$tl_recordcount -p operationcount=$tl_opcount -target $i -P workloads/workload$workload_num -s > workload${workload_num}_${i}_run_res.txt
                 elif [ $database == mongodb ]; then
                         echo running mongodb
-                        ./bin/ycsb run $database -P mongodb.url=$db_prop -threads $tl_threads -p recordcount=$tl_recordcount -p operationcount=$tl_opcount -target $i -P workloads/workload$workload_num -s > workload${workload_num}_${i}_run_res.txt
+                        ./bin/ycsb run $database -p mongodb.url=mongodb://$db_prop -threads $tl_threads -p recordcount=$tl_recordcount -p operationcount=$tl_opcount -target $i -P workloads/workload$workload_num -s > workload${workload_num}_${i}_run_res.txt
                 fi
 
                 printf "workload${workload_num}_${i}_run_res.txt \n with parameter workload $workload_num -threads $tl_threads -p operationcount=$tl_opcount -P workloads/workload$workload_num \n created on $(date +%Y%m%d)\n" >> $tl_output
