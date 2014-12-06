@@ -1,4 +1,4 @@
-import re
+import re, sys
 
 class TestRecord(object):
 	workload = ""
@@ -51,22 +51,26 @@ class TestRecord(object):
 			self.cleanup_latency)
 
 
-test_pattern = re.compile('.txt')
-data_pattern = re.compile('Throughput|AverageLatency')
+def parse_and_output(input_file_path, output_file_path):
+	test_pattern = re.compile('.txt')
+	data_pattern = re.compile('Throughput|AverageLatency')
 
-records = []
+	records = []
 
-with open('./test_thread_output.txt') as f:
-    for line in f:
-    	if re.search(test_pattern, line):
-    		line_tokens = line.split("_")
-    		records.append(TestRecord(line_tokens[0][-1], line_tokens[1]))
-    	else:
-	    	result = re.search(data_pattern, line)
-	    	if result:
-	    		records[-1].parse_and_insert(line)
+	with open(input_file_path) as f:
+	    for line in f:
+	    	if re.search(test_pattern, line):
+	    		line_tokens = line.split("_")
+	    		records.append(TestRecord(line_tokens[0][-1], line_tokens[1]))
+	    	else:
+		    	result = re.search(data_pattern, line)
+		    	if result:
+		    		records[-1].parse_and_insert(line)
 
-for record in records:
-	print record.to_string()
+	with open(output_file_path, "w") as f:
+		f.write("\n".join([record.to_string() for record in records]))
+               
 
-
+if __name__ == "__main__":
+	# expecting 2 arguments!
+	parse_and_output(sys.argv[1], sys.argv[2])
