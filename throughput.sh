@@ -4,7 +4,7 @@
 #db_prop=dynamodb/conf/dynamodb.properties
 #for cassandra
 #database=cassandra-10
-#db_prop= "54.149.97.229"
+#db_prop="54.149.97.229"
 
 #for mongodb
 # database=mongodb
