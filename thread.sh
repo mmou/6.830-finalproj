@@ -49,6 +49,6 @@ for i in ${threads[@]}; do
             fi
 
             printf "Threads \n workload${workload_num}_${i}_run_res.txt \n with parameter workload $workload_num -threads $i -p operationcount=$threads_opcount -P workloads/workload$workload_num \n created on $(date +%Y%m%d)" >> $threads_output
-            grep [overall] workloada_${i}_run_res.txt | grep -v YCSB | grep -v com.yahoo >> $threads_output
+            grep [overall] workload${workload_num}_${i}_run_res.txt | grep -v YCSB | grep -v com.yahoo >> $threads_output
         done
 done

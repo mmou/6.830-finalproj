@@ -51,6 +51,6 @@ for i in ${throughput[@]}; do
         fi
 
         printf "workload${workload_num}_${i}_run_res.txt \n with parameter workload $workload_num -threads $tl_threads -p operationcount=$tl_opcount -P workloads/workload$workload_num \n created on $(date +%Y%m%d)\n" >> $tl_output
-        grep [overall] workloada_${i}_run_res.txt | grep -v YCSB | grep -v com.yahoo >> $tl_output
+        grep [overall] workload${workload_num}_${i}_run_res.txt | grep -v YCSB | grep -v com.yahoo >> $tl_output
     done
 done
