@@ -10,12 +10,12 @@ class TestRecord(object):
 	rmw_latency = ""
 	cleanup_latency = ""
 
-	overall_throughput_pattern = re.compile("OVERALL")
-	update_latency_pattern = re.compile("UPDATE")
-	read_latency_pattern = re.compile("READ")
-	insert_latency_pattern = re.compile("INSERT")
-	rmw_latency_pattern = re.compile("READ-MODIFY-WRITE")
-	cleanup_latency_pattern = re.compile("CLEANUP")
+	overall_throughput_pattern = re.compile("\[OVERALL\]")
+	update_latency_pattern = re.compile("\[UPDATE\]")
+	rmw_latency_pattern = re.compile("\[READ-MODIFY-WRITE\]")
+	read_latency_pattern = re.compile("\[READ\]")
+	insert_latency_pattern = re.compile("\[INSERT\]")
+	cleanup_latency_pattern = re.compile("\[CLEANUP\]")
 
 	def __init__(self, workload, variable_prop_value):
 		self.workload = workload
@@ -64,7 +64,7 @@ with open('./test_thread_output.txt') as f:
     	else:
 	    	result = re.search(data_pattern, line)
 	    	if result:
-				records[-1].parse_and_insert(line)
+	    		records[-1].parse_and_insert(line)
 
 for record in records:
 	print record.to_string()
