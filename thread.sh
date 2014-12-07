@@ -6,7 +6,7 @@
 
 #for cassandra
 #database=cassandra-10
-#db_prop="54.149.97.229"
+#db_prop="54.148.137.188"
 
 #for mongodb
 # database=mongodb
@@ -18,8 +18,8 @@
 threads=(1 10 25 50 75 100 250 500 750 1000)
 threads_opcount=100000
 threads_recordcount=1000000
-threads_output=threads_output_all
-workload=(a b c f d) #put more
+threads_output=threads_output_all_${database}.txt
+workload=(a b c f d e) #put more
 
 rm -f $threads_output
 
@@ -34,21 +34,30 @@ elif [ $database == mongodb ]; then
         ./bin/ycsb load $database -p mongodb.url=mongodb://$db_prop -threads 10 -p recordcount=$threads_recordcount -P workloads/workloada -s > workloada_load_res.txt
 fi
 
-for i in ${threads[@]}; do
-        for workload_num in ${workload[@]}; do
-            echo target $i 'workload'  $workload_num
-            if [ $database == dynamodb ]; then
-                    echo running $database
-                    ./bin/ycsb run $database -P $db_prop -threads $i -p recordcount=$threads_recordcount -p operationcount=$threads_opcount -P workloads/workload$workload_num -s > workload${workload_num}_${i}_run_res.txt
-            elif [ $database == cassandra-10 ]; then
-                    echo running $database
-                    ./bin/ycsb run $database -p hosts=$db_prop -threads $i -p recordcount=$threads_recordcount -p operationcount=$threads_opcount -P workloads/workload$workload_num -s > workload${workload_num}_${i}_run_res.txt
-            elif [ $database == mongodb ]; then
-                    echo running $database
-                    ./bin/ycsb run $database -p mongodb.url=mongodb://$db_prop -threads $i -p recordcount=$threads_recordcount -p operationcount=$threads_opcount -P workloads/workload$workload_num -s > workload${workload_num}_${i}_run_res.txt
-            fi
+for workload_num in ${workload[@]}; do
+    for i in ${threads[@]}; do
 
-            printf "Threads \n workload${workload_num}_${i}_run_res.txt \n with parameter workload $workload_num -threads $i -p operationcount=$threads_opcount -P workloads/workload$workload_num \n created on $(date +%Y%m%d)" >> $threads_output
-            grep [overall] workload${workload_num}_${i}_run_res.txt | grep -v YCSB | grep -v com.yahoo >> $threads_output
-        done
+        echo target $i 'workload'  $workload_num
+        if [ $database == dynamodb ]; then
+            echo running $database
+            ./bin/ycsb run $database -P $db_prop -threads $i -p recordcount=$threads_recordcount -p operationcount=$threads_opcount -P workloads/workload$workload_num -s > workload${workload_num}_${i}_run_res.txt
+        elif [ $database == cassandra-10 ]; then
+            echo running $database
+            ./bin/ycsb run $database -p hosts=$db_prop -threads $i -p recordcount=$threads_recordcount -p operationcount=$threads_opcount -P workloads/workload$workload_num -s > workload${workload_num}_${i}_run_res.txt
+        elif [ $database == mongodb ]; then
+            echo running $database
+            ./bin/ycsb run $database -p mongodb.url=mongodb://$db_prop -threads $i -p recordcount=$threads_recordcount -p operationcount=$threads_opcount -P workloads/workload$workload_num -s > workload${workload_num}_${i}_run_res.txt
+        fi
+
+        printf "Threads \n workload${workload_num}_${i}_run_res.txt \n with parameter workload $workload_num -threads $i -p operationcount=$threads_opcount -P workloads/workload$workload_num \n created on $(date +%Y%m%d)" >> $threads_output
+        grep [overall] workload${workload_num}_${i}_run_res.txt | grep -v YCSB | grep -v com.yahoo >> $threads_output
+
+        #cleanup
+        if [ $workload_num == d ] || [ $workload_num == e ] ; then
+            read -p "You just inserted records. Have you cleared the database (y/n)?" CONT
+            if [ "$CONT" == "y" ]; then
+                continue
+            fi
+        fi
+    done
 done
