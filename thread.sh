@@ -56,7 +56,17 @@ for workload_num in ${workload[@]}; do
         if [ $workload_num == d ] || [ $workload_num == e ] ; then
             read -p "You just inserted records. Have you cleared the database (y/n)?" CONT
             if [ "$CONT" == "y" ]; then
-                continue
+                # reload data    
+                if [ $database == dynamodb ]; then
+                        echo loading $database
+                        ./bin/ycsb load $database -P $db_prop -threads 10 -p recordcount=$threads_recordcount -P workloads/workloada -s > workloada_load_res.txt
+                elif [ $database == cassandra-10 ]; then
+                        echo loading $database
+                        ./bin/ycsb load $database -p hosts=$db_prop -threads 10 -p recordcount=$threads_recordcount -P workloads/workloada -s > workloada_load_res.txt
+                elif [ $database == mongodb ]; then
+                        echo loading $database
+                        ./bin/ycsb load $database -p mongodb.url=mongodb://$db_prop -threads 10 -p recordcount=$threads_recordcount -P workloads/workloada -s > workloada_load_res.txt
+                fi                
             fi
         fi
     done
