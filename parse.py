@@ -9,6 +9,7 @@ class TestRecord(object):
 	insert_latency = ""
 	rmw_latency = ""
 	cleanup_latency = ""
+	scan_latency = ""	
 
 	overall_throughput_pattern = re.compile("\[OVERALL\]")
 	update_latency_pattern = re.compile("\[UPDATE\]")
@@ -16,6 +17,7 @@ class TestRecord(object):
 	read_latency_pattern = re.compile("\[READ\]")
 	insert_latency_pattern = re.compile("\[INSERT\]")
 	cleanup_latency_pattern = re.compile("\[CLEANUP\]")
+	scan_latency_pattern = re.compile("\[SCAN\]")	
 
 	def __init__(self, workload, variable_prop_value):
 		self.workload = workload
@@ -36,6 +38,8 @@ class TestRecord(object):
 			self.rmw_latency = line_tokens[-1]
 		elif re.search(self.cleanup_latency_pattern, line_tokens[0]):
 			self.cleanup_latency = line_tokens[-1]
+		elif re.search(self.scan_latency_pattern, line_tokens[0]):
+			self.scan_latency = line_tokens[-1]
 		else:
 			print "FAILURE!!!"				
 
@@ -48,7 +52,8 @@ class TestRecord(object):
 			self.read_latency,
 			self.insert_latency,
 			self.rmw_latency,
-			self.cleanup_latency)
+			self.cleanup_latency,
+			self.scan_latency)
 
 
 def parse_and_output(input_file_path, output_file_path):
