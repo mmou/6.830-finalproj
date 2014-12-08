@@ -44,7 +44,7 @@ class TestRecord(object):
 			print "FAILURE!!!"				
 
 	def to_string(self):
-		return "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}".format(
+		return "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}".format(
 			self.variable_prop_value, 
 			self.workload, 
 			self.overall_throughput,
